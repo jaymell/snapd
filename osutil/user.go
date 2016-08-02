@@ -26,6 +26,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -43,14 +44,29 @@ func AddExtraUser(name string, sshKeys []string) error {
 	if err != nil {
 		return fmt.Errorf("cannot find user %q: %s", name, err)
 	}
+	uid, err := strconv.Atoi(u.Uid)
+	if err != nil {
+		return fmt.Errorf("error converting uid: %s", err)
+	}
+	gid, err := strconv.Atoi(u.Gid)
+	if err != nil {
+		return fmt.Errorf("error converting gid: %s", err)
+	}
+
 	sshDir := filepath.Join(u.HomeDir, ".ssh")
-	if err := os.MkdirAll(sshDir, 0700); err != nil {
+	if err := os.Mkdir(sshDir, 0700); err != nil {
 		return fmt.Errorf("cannot create %s: %s", sshDir, err)
+	}
+	if err := os.Chown(sshDir, uid, gid); err != nil {
+		return fmt.Errorf("cannot set %s ownership: %s", sshDir, err)
 	}
 	authKeys := filepath.Join(sshDir, "authorized_keys")
 	authKeysContent := strings.Join(sshKeys, "\n")
 	if err := ioutil.WriteFile(authKeys, []byte(authKeysContent), 0644); err != nil {
 		return fmt.Errorf("cannot write %s: %s", authKeys, err)
+	}
+	if err := os.Chown(authKeys, uid, gid); err != nil {
+		return fmt.Errorf("cannot set %s ownership: %s", authKeys, err)
 	}
 
 	return nil
