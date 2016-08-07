@@ -39,8 +39,12 @@ var _ = check.Suite(&createUserSuite{})
 func (s *createUserSuite) TestAddExtraSudoUser(c *check.C) {
 	mockHome := c.MkDir()
 	restorer := osutil.MockUserLookup(func(string) (*user.User, error) {
+		current, err := user.Current()
+		c.Assert(err, check.IsNil)
 		return &user.User{
 			HomeDir: mockHome,
+			Uid:     current.Uid,
+			Gid:     current.Gid,
 		}, nil
 	})
 	defer restorer()
