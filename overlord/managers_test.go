@@ -40,7 +40,6 @@ import (
 	"github.com/snapcore/snapd/overlord/snapstate"
 	"github.com/snapcore/snapd/overlord/state"
 	"github.com/snapcore/snapd/partition"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/snap/snaptest"
 	"github.com/snapcore/snapd/store"
@@ -352,7 +351,7 @@ func (ms *mgrsSuite) TestInstallCoreSnapUpdatesBootloader(c *C) {
 	partition.ForceBootloader(bootloader)
 	defer partition.ForceBootloader(nil)
 
-	restore := release.MockOnClassic(false)
+	restore := osutil.MockOnClassic(false)
 	defer restore()
 
 	const packageOS = `
@@ -390,7 +389,7 @@ func (ms *mgrsSuite) TestInstallKernelSnapUpdatesBootloader(c *C) {
 	partition.ForceBootloader(bootloader)
 	defer partition.ForceBootloader(nil)
 
-	restore := release.MockOnClassic(false)
+	restore := osutil.MockOnClassic(false)
 	defer restore()
 
 	const packageKernel = `

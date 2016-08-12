@@ -26,8 +26,8 @@ import (
 	"path/filepath"
 
 	"github.com/snapcore/snapd/logger"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/partition"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 )
 
@@ -103,7 +103,7 @@ func ExtractKernelAssets(s *snap.Info, snapf snap.Container) error {
 // SetNextBoot will schedule the given OS or kernel snap to be used in
 // the next boot
 func SetNextBoot(s *snap.Info) error {
-	if release.OnClassic {
+	if osutil.OnClassic {
 		return nil
 	}
 	if s.Type != snap.TypeOS && s.Type != snap.TypeKernel {

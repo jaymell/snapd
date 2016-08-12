@@ -25,9 +25,9 @@ import (
 
 	"github.com/snapcore/snapd/arch"
 	"github.com/snapcore/snapd/firstboot"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/overlord/snapstate/backend"
 	"github.com/snapcore/snapd/overlord/state"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 )
 
@@ -82,7 +82,7 @@ func checkSnap(st *state.State, snapFilePath string, curInfo *snap.Info, flags F
 	}
 
 	// gadget specific checks
-	if release.OnClassic {
+	if osutil.OnClassic {
 		// for the time being
 		return fmt.Errorf("cannot install a gadget snap on classic")
 	}

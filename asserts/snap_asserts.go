@@ -26,7 +26,7 @@ import (
 
 	_ "golang.org/x/crypto/sha3" // expected for digests
 
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 )
 
 // SnapDeclaration holds a snap-declaration assertion, declaring a
@@ -235,7 +235,7 @@ func (snaprev *SnapRevision) checkConsistency(db RODatabase, acck *AccountKey) e
 	}
 	_, err = db.Find(SnapDeclarationType, map[string]string{
 		// XXX: mediate getting current series through some context object? this gets the job done for now
-		"series":  release.Series,
+		"series":  osutil.Series,
 		"snap-id": snaprev.SnapID(),
 	})
 	if err == ErrNotFound {
@@ -254,7 +254,7 @@ var _ consistencyChecker = (*SnapRevision)(nil)
 func (snaprev *SnapRevision) Prerequisites() []*Ref {
 	return []*Ref{
 		// XXX: mediate getting current series through some context object? this gets the job done for now
-		&Ref{Type: SnapDeclarationType, PrimaryKey: []string{release.Series, snaprev.SnapID()}},
+		&Ref{Type: SnapDeclarationType, PrimaryKey: []string{osutil.Series, snaprev.SnapID()}},
 		&Ref{Type: AccountType, PrimaryKey: []string{snaprev.DeveloperID()}},
 	}
 }

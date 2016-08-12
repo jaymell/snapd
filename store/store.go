@@ -37,9 +37,9 @@ import (
 	"github.com/snapcore/snapd/arch"
 	"github.com/snapcore/snapd/asserts"
 	"github.com/snapcore/snapd/logger"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/overlord/auth"
 	"github.com/snapcore/snapd/progress"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 )
 
@@ -60,17 +60,17 @@ var userAgent = "unset"
 
 func SetUserAgentFromVersion(version string) {
 	extras := make([]string, 1, 3)
-	extras[0] = "series " + release.Series
-	if release.OnClassic {
+	extras[0] = "series " + osutil.Series
+	if osutil.OnClassic {
 		extras = append(extras, "classic")
 	}
-	if release.ReleaseInfo.ForceDevMode() {
+	if osutil.ReleaseInfo.ForceDevMode() {
 		extras = append(extras, "devmode")
 	}
 	// xxx this assumes ReleaseInfo's ID and VersionID don't have weird characters
 	// (see rfc 7231 for values of weird)
 	// assumption checks out in practice, q.v. https://github.com/zyga/os-release-zoo
-	userAgent = fmt.Sprintf("snapd/%v (%s) %s/%s (%s)", version, strings.Join(extras, "; "), release.ReleaseInfo.ID, release.ReleaseInfo.VersionID, string(arch.UbuntuArchitecture()))
+	userAgent = fmt.Sprintf("snapd/%v (%s) %s/%s (%s)", version, strings.Join(extras, "; "), osutil.ReleaseInfo.ID, osutil.ReleaseInfo.VersionID, string(arch.UbuntuArchitecture()))
 }
 
 func infoFromRemote(d snapDetails) *snap.Info {
@@ -430,7 +430,7 @@ func (s *Store) newRequest(reqOptions *requestOptions, user *auth.UserState) (*h
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Accept", reqOptions.Accept)
 	req.Header.Set("X-Ubuntu-Architecture", string(arch.UbuntuArchitecture()))
-	req.Header.Set("X-Ubuntu-Series", release.Series)
+	req.Header.Set("X-Ubuntu-Series", osutil.Series)
 	req.Header.Set("X-Ubuntu-Wire-Protocol", UbuntuCoreWireProtocol)
 
 	if reqOptions.ContentType != "" {

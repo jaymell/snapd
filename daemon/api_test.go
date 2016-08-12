@@ -51,7 +51,6 @@ import (
 	"github.com/snapcore/snapd/overlord/snapstate"
 	"github.com/snapcore/snapd/overlord/state"
 	"github.com/snapcore/snapd/progress"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/snap/snaptest"
 	"github.com/snapcore/snapd/store"
@@ -124,7 +123,7 @@ func (s *apiSuite) muxVars(*http.Request) map[string]string {
 
 func (s *apiSuite) SetUpSuite(c *check.C) {
 	muxVars = s.muxVars
-	s.restoreRelease = release.MockReleaseInfo(&release.OS{
+	s.restoreRelease = osutil.MockReleaseInfo(&osutil.OS{
 		ID:        "ubuntu",
 		VersionID: "mocked",
 	})
@@ -431,9 +430,9 @@ func (s *apiSuite) TestSysInfo(c *check.C) {
 
 	s.daemon(c).Version = "42b1"
 
-	restore := release.MockReleaseInfo(&release.OS{ID: "distro-id", VersionID: "1.2"})
+	restore := osutil.MockReleaseInfo(&osutil.OS{ID: "distro-id", VersionID: "1.2"})
 	defer restore()
-	restore = release.MockOnClassic(true)
+	restore = osutil.MockOnClassic(true)
 	defer restore()
 	sysInfoCmd.GET(sysInfoCmd, nil, nil).ServeHTTP(rec, nil)
 	c.Check(rec.Code, check.Equals, 200)
@@ -1299,7 +1298,7 @@ func (s *apiSuite) TestSideloadSnapOnDevModeDistro(c *check.C) {
 	// try a multipart/form-data upload
 	body := sideLoadBodyWithoutDevMode
 	head := map[string]string{"Content-Type": "multipart/thing; boundary=--hello--"}
-	restore := release.MockReleaseInfo(&release.OS{ID: "x-devmode-distro"})
+	restore := osutil.MockReleaseInfo(&osutil.OS{ID: "x-devmode-distro"})
 	defer restore()
 	chgSummary := s.sideloadCheck(c, body, head, snapstate.DevMode, false)
 	c.Check(chgSummary, check.Equals, `Install "local" snap from file "a/b/local.snap"`)
@@ -1318,7 +1317,7 @@ func (s *apiSuite) TestSideloadSnapDevMode(c *check.C) {
 		"----hello--\r\n"
 	head := map[string]string{"Content-Type": "multipart/thing; boundary=--hello--"}
 	// try a multipart/form-data upload
-	restore := release.MockReleaseInfo(&release.OS{ID: "ubuntu"})
+	restore := osutil.MockReleaseInfo(&osutil.OS{ID: "ubuntu"})
 	defer restore()
 	chgSummary := s.sideloadCheck(c, body, head, snapstate.DevMode, true)
 	c.Check(chgSummary, check.Equals, `Install "local" snap from file "x"`)
@@ -1388,7 +1387,7 @@ func (s *apiSuite) TestSideloadSnapJailModeInDevModeOS(c *check.C) {
 	c.Assert(err, check.IsNil)
 	req.Header.Set("Content-Type", "multipart/thing; boundary=--hello--")
 
-	restore := release.MockReleaseInfo(&release.OS{ID: "x-devmode-distro"})
+	restore := osutil.MockReleaseInfo(&osutil.OS{ID: "x-devmode-distro"})
 	defer restore()
 
 	rsp := sideloadSnap(snapsCmd, req, nil).(*resp)
@@ -1671,16 +1670,16 @@ func (s *apiSuite) TestAppIconGetNoApp(c *check.C) {
 }
 
 func (s *apiSuite) TestInstallOnNonDevModeDistro(c *check.C) {
-	s.testInstall(c, &release.OS{ID: "ubuntu"}, snapstate.Flags(0))
+	s.testInstall(c, &osutil.OS{ID: "ubuntu"}, snapstate.Flags(0))
 }
 func (s *apiSuite) TestInstallOnDevModeDistro(c *check.C) {
-	s.testInstall(c, &release.OS{ID: "x-devmode-distro"}, snapstate.DevMode)
+	s.testInstall(c, &osutil.OS{ID: "x-devmode-distro"}, snapstate.DevMode)
 }
 
-func (s *apiSuite) testInstall(c *check.C, releaseInfo *release.OS, flags snapstate.Flags) {
+func (s *apiSuite) testInstall(c *check.C, releaseInfo *osutil.OS, flags snapstate.Flags) {
 	calledFlags := snapstate.Flags(42)
 	installQueue := []string{}
-	restore := release.MockReleaseInfo(releaseInfo)
+	restore := osutil.MockReleaseInfo(releaseInfo)
 	defer restore()
 
 	snapstateGet = func(s *state.State, name string, snapst *snapstate.SnapState) error {
@@ -2007,7 +2006,7 @@ func (s *apiSuite) TestInstallJailMode(c *check.C) {
 }
 
 func (s *apiSuite) TestInstallJailModeDevModeOS(c *check.C) {
-	restore := release.MockReleaseInfo(&release.OS{ID: "x-devmode-distro"})
+	restore := osutil.MockReleaseInfo(&osutil.OS{ID: "x-devmode-distro"})
 	defer restore()
 
 	d := s.daemon(c)

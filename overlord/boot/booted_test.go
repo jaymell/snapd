@@ -30,12 +30,12 @@ import (
 
 	"github.com/snapcore/snapd/boot/boottest"
 	"github.com/snapcore/snapd/dirs"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/overlord"
 	"github.com/snapcore/snapd/overlord/boot"
 	"github.com/snapcore/snapd/overlord/snapstate"
 	"github.com/snapcore/snapd/overlord/state"
 	"github.com/snapcore/snapd/partition"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/snap/snaptest"
 )
@@ -55,7 +55,7 @@ func (bs *bootedSuite) SetUpTest(c *C) {
 	c.Assert(err, IsNil)
 
 	// booted is not running on classic
-	release.MockOnClassic(false)
+	osutil.MockOnClassic(false)
 
 	bs.bootloader = boottest.NewMockBootloader("mock", c.MkDir())
 	bs.bootloader.BootVars["snap_core"] = "ubuntu-core_2.snap"

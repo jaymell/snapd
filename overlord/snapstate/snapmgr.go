@@ -29,10 +29,10 @@ import (
 	"gopkg.in/tomb.v2"
 
 	"github.com/snapcore/snapd/logger"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/overlord/auth"
 	"github.com/snapcore/snapd/overlord/snapstate/backend"
 	"github.com/snapcore/snapd/overlord/state"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/store"
 )
@@ -932,7 +932,7 @@ func (m *SnapManager) doLinkSnap(t *state.Task, _ *tomb.Tomb) error {
 
 	// if we just installed a core snap, request a restart
 	// so that we switch executing its snapd
-	if newInfo.Type == snap.TypeOS && release.OnClassic {
+	if newInfo.Type == snap.TypeOS && osutil.OnClassic {
 		t.Logf("Restarting snapd...")
 		st.Unlock()
 		st.RequestRestart()

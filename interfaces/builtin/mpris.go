@@ -23,7 +23,7 @@ import (
 	"bytes"
 
 	"github.com/snapcore/snapd/interfaces"
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 )
 
 var mprisPermanentSlotAppArmor = []byte(`
@@ -192,7 +192,7 @@ func (iface *MprisInterface) PermanentSlotSnippet(slot *interfaces.Slot, securit
 		snippet := mprisPermanentSlotAppArmor
 		// on classic, allow unconfined remotes to control the player
 		// (eg, indicator-sound)
-		if release.OnClassic {
+		if osutil.OnClassic {
 			snippet = append(snippet, mprisConnectedSlotAppArmorClassic...)
 		}
 		return snippet, nil

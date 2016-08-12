@@ -48,7 +48,6 @@ import (
 	"github.com/snapcore/snapd/overlord/snapstate"
 	"github.com/snapcore/snapd/overlord/state"
 	"github.com/snapcore/snapd/progress"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/store"
 )
@@ -195,10 +194,10 @@ func tbd(c *Command, r *http.Request, user *auth.UserState) Response {
 
 func sysInfo(c *Command, r *http.Request, user *auth.UserState) Response {
 	m := map[string]interface{}{
-		"series":     release.Series,
+		"series":     osutil.Series,
 		"version":    c.d.Version,
-		"os-release": release.ReleaseInfo,
-		"on-classic": release.OnClassic,
+		"os-release": osutil.ReleaseInfo,
+		"on-classic": osutil.OnClassic,
 	}
 
 	// TODO: set the store-id here from the model information
@@ -726,7 +725,7 @@ var errModeConflict = errors.New("cannot use devmode and jailmode flags together
 var errNoJailMode = errors.New("this system cannot honour the jailmode flag")
 
 func modeFlags(devMode, jailMode bool) (snapstate.Flags, error) {
-	devModeOS := release.ReleaseInfo.ForceDevMode()
+	devModeOS := osutil.ReleaseInfo.ForceDevMode()
 	flags := snapstate.Flags(0)
 	if jailMode {
 		if devModeOS {

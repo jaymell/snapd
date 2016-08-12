@@ -26,7 +26,7 @@ import (
 	"github.com/snapcore/snapd/interfaces/mount"
 	"github.com/snapcore/snapd/interfaces/seccomp"
 	"github.com/snapcore/snapd/interfaces/udev"
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 )
 
 // append when a new security backend is added
@@ -38,7 +38,7 @@ var All = []interfaces.SecurityBackend{
 }
 
 func init() {
-	if !release.ReleaseInfo.ForceDevMode() {
+	if !osutil.ReleaseInfo.ForceDevMode() {
 		All = append(All, &apparmor.Backend{})
 	}
 }

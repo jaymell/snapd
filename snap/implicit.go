@@ -24,7 +24,6 @@ import (
 	"io/ioutil"
 
 	"github.com/snapcore/snapd/osutil"
-	"github.com/snapcore/snapd/release"
 )
 
 var implicitSlots = []string{
@@ -78,7 +77,7 @@ func AddImplicitSlots(snapInfo *Info) {
 			snapInfo.Slots[ifaceName] = makeImplicitSlot(snapInfo, ifaceName)
 		}
 	}
-	if !release.OnClassic {
+	if !osutil.OnClassic {
 		return
 	}
 	for _, ifaceName := range implicitClassicSlots {

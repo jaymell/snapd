@@ -35,7 +35,6 @@ import (
 	"github.com/snapcore/snapd/overlord/auth"
 	"github.com/snapcore/snapd/partition"
 	"github.com/snapcore/snapd/progress"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/snap/squashfs"
 	"github.com/snapcore/snapd/store"
@@ -303,10 +302,10 @@ func downloadSnapWithSideInfo(name string, opts *downloadOptions) (targetPath st
 
 	// FIXME: avoid global mutation
 	if opts.Series != "" {
-		oldSeries := release.Series
-		defer func() { release.Series = oldSeries }()
+		oldSeries := osutil.Series
+		defer func() { osutil.Series = oldSeries }()
 
-		release.Series = opts.Series
+		osutil.Series = opts.Series
 	}
 	// FIXME: avoid global mutation
 	if opts.Architecture != "" {

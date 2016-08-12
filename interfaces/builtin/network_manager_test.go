@@ -24,7 +24,7 @@ import (
 
 	"github.com/snapcore/snapd/interfaces"
 	"github.com/snapcore/snapd/interfaces/builtin"
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/testutil"
 )
@@ -72,7 +72,7 @@ func (s *NetworkManagerInterfaceSuite) TestConnectedPlugSnippetUsesSlotLabelAll(
 			Apps:      map[string]*snap.AppInfo{"app1": app1, "app2": app2},
 		},
 	}
-	release.OnClassic = false
+	osutil.OnClassic = false
 	snippet, err := s.iface.ConnectedPlugSnippet(s.plug, slot, interfaces.SecurityAppArmor)
 	c.Assert(err, IsNil)
 	c.Assert(string(snippet), testutil.Contains, `peer=(label="snap.network-manager.*"),`)
@@ -94,7 +94,7 @@ func (s *NetworkManagerInterfaceSuite) TestConnectedPlugSnippetUsesSlotLabelSome
 			Apps:      map[string]*snap.AppInfo{"app1": app1, "app2": app2},
 		},
 	}
-	release.OnClassic = false
+	osutil.OnClassic = false
 	snippet, err := s.iface.ConnectedPlugSnippet(s.plug, slot, interfaces.SecurityAppArmor)
 	c.Assert(err, IsNil)
 	c.Assert(string(snippet), testutil.Contains, `peer=(label="snap.network-manager.{app1,app2}"),`)
@@ -114,7 +114,7 @@ func (s *NetworkManagerInterfaceSuite) TestConnectedPlugSnippetUsesSlotLabelOne(
 			Apps:      map[string]*snap.AppInfo{"app": app},
 		},
 	}
-	release.OnClassic = false
+	osutil.OnClassic = false
 	snippet, err := s.iface.ConnectedPlugSnippet(s.plug, slot, interfaces.SecurityAppArmor)
 	c.Assert(err, IsNil)
 	c.Assert(string(snippet), testutil.Contains, `peer=(label="snap.network-manager.app"),`)
@@ -122,7 +122,7 @@ func (s *NetworkManagerInterfaceSuite) TestConnectedPlugSnippetUsesSlotLabelOne(
 
 func (s *NetworkManagerInterfaceSuite) TestConnectedPlugSnippedUsesUnconfinedLabelOnClassic(c *C) {
 	slot := &interfaces.Slot{}
-	release.OnClassic = true
+	osutil.OnClassic = true
 	snippet, err := s.iface.ConnectedPlugSnippet(s.plug, slot, interfaces.SecurityAppArmor)
 	c.Assert(err, IsNil)
 	c.Assert(string(snippet), testutil.Contains, "peer=(label=unconfined),")

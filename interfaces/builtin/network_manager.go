@@ -23,7 +23,7 @@ import (
 	"bytes"
 
 	"github.com/snapcore/snapd/interfaces"
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 )
 
 var networkManagerPermanentSlotAppArmor = []byte(`
@@ -391,7 +391,7 @@ func (iface *NetworkManagerInterface) ConnectedPlugSnippet(plug *interfaces.Plug
 	case interfaces.SecurityAppArmor:
 		old := []byte("###SLOT_SECURITY_TAGS###")
 		new := []byte("")
-		if release.OnClassic {
+		if osutil.OnClassic {
 			// If we're running on classic NetworkManager will be part
 			// of the OS snap and will run unconfined.
 			new = []byte("unconfined")

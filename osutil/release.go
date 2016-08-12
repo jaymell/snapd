@@ -17,14 +17,12 @@
  *
  */
 
-package release
+package osutil
 
 import (
 	"bufio"
 	"os"
 	"strings"
-
-	"github.com/snapcore/snapd/osutil"
 	"unicode"
 )
 
@@ -129,7 +127,7 @@ func init() {
 	// dpkg status file can be used as an indicator for a classic vs all-snap
 	// system.
 	if ReleaseInfo.ID == "ubuntu" {
-		OnClassic = osutil.FileExists("/var/lib/dpkg/status")
+		OnClassic = FileExists("/var/lib/dpkg/status")
 	}
 }
 

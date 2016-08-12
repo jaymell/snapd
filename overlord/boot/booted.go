@@ -25,11 +25,11 @@ import (
 	"time"
 
 	"github.com/snapcore/snapd/logger"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/overlord"
 	"github.com/snapcore/snapd/overlord/snapstate"
 	"github.com/snapcore/snapd/overlord/state"
 	"github.com/snapcore/snapd/partition"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 )
 
@@ -57,7 +57,7 @@ func nameAndRevnoFromSnap(sn string) (string, snap.Revision, error) {
 func UpdateRevisions(ovld *overlord.Overlord) error {
 	const errorPrefix = "cannot update revisions after boot changes: "
 
-	if release.OnClassic {
+	if osutil.OnClassic {
 		return nil
 	}
 

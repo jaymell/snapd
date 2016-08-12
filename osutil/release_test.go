@@ -17,20 +17,16 @@
  *
  */
 
-package release_test
+package osutil_test
 
 import (
 	"io/ioutil"
 	"path/filepath"
-	"testing"
 
 	. "gopkg.in/check.v1"
 
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 )
-
-// Hook up check.v1 into the "go test" runner
-func Test(t *testing.T) { TestingT(t) }
 
 type ReleaseTestSuite struct {
 }
@@ -38,12 +34,12 @@ type ReleaseTestSuite struct {
 var _ = Suite(&ReleaseTestSuite{})
 
 func (s *ReleaseTestSuite) TestSetup(c *C) {
-	c.Check(release.Series, Equals, "16")
+	c.Check(osutil.Series, Equals, "16")
 }
 
 func mockOSRelease(c *C) string {
 	// FIXME: use AddCleanup here once available so that we
-	//        can do release.SetLSBReleasePath() here directly
+	//        can do osutil.SetLSBReleasePath() here directly
 	mockOSRelease := filepath.Join(c.MkDir(), "mock-os-release")
 	s := `
 NAME="Ubuntu"
@@ -64,10 +60,10 @@ UBUNTU_CODENAME=awesome
 }
 
 func (s *ReleaseTestSuite) TestReadOSRelease(c *C) {
-	reset := release.MockOSReleasePath(mockOSRelease(c))
+	reset := osutil.MockOSReleasePath(mockOSRelease(c))
 	defer reset()
 
-	os := release.ReadOSRelease()
+	os := osutil.ReadOSRelease()
 	c.Check(os.ID, Equals, "ubuntu")
 	c.Check(os.VersionID, Equals, "18.09")
 }
@@ -86,43 +82,43 @@ BUG_REPORT_URL="https://bugs.launchpad.net/elementary/+filebug"`
 	err := ioutil.WriteFile(mockOSRelease, []byte(dump), 0644)
 	c.Assert(err, IsNil)
 
-	reset := release.MockOSReleasePath(mockOSRelease)
+	reset := osutil.MockOSReleasePath(mockOSRelease)
 	defer reset()
 
-	os := release.ReadOSRelease()
+	os := osutil.ReadOSRelease()
 	c.Check(os.ID, Equals, "elementary")
 	c.Check(os.VersionID, Equals, "0.4")
 }
 
 func (s *ReleaseTestSuite) TestReadOSReleaseNotFound(c *C) {
-	reset := release.MockOSReleasePath("not-there")
+	reset := osutil.MockOSReleasePath("not-there")
 	defer reset()
 
-	os := release.ReadOSRelease()
-	c.Assert(os, DeepEquals, release.OS{ID: "linux", VersionID: "unknown"})
+	os := osutil.ReadOSRelease()
+	c.Assert(os, DeepEquals, osutil.OS{ID: "linux", VersionID: "unknown"})
 }
 
 func (s *ReleaseTestSuite) TestOnClassic(c *C) {
-	reset := release.MockOnClassic(true)
+	reset := osutil.MockOnClassic(true)
 	defer reset()
-	c.Assert(release.OnClassic, Equals, true)
+	c.Assert(osutil.OnClassic, Equals, true)
 
-	reset = release.MockOnClassic(false)
+	reset = osutil.MockOnClassic(false)
 	defer reset()
-	c.Assert(release.OnClassic, Equals, false)
+	c.Assert(osutil.OnClassic, Equals, false)
 }
 
 func (s *ReleaseTestSuite) TestReleaseInfo(c *C) {
-	reset := release.MockReleaseInfo(&release.OS{
+	reset := osutil.MockReleaseInfo(&osutil.OS{
 		ID: "distro-id",
 	})
 	defer reset()
-	c.Assert(release.ReleaseInfo.ID, Equals, "distro-id")
+	c.Assert(osutil.ReleaseInfo.ID, Equals, "distro-id")
 }
 
 func (s *ReleaseTestSuite) TestForceDevMode(c *C) {
 	// Restore real OS info at the end of this function.
-	defer release.MockReleaseInfo(&release.OS{})()
+	defer osutil.MockReleaseInfo(&osutil.OS{})()
 	distros := []struct {
 		id        string
 		idVersion string
@@ -141,9 +137,9 @@ func (s *ReleaseTestSuite) TestForceDevMode(c *C) {
 		{id: "ubuntu", devmode: false},
 	}
 	for _, distro := range distros {
-		rel := &release.OS{ID: distro.id, VersionID: distro.idVersion}
+		rel := &osutil.OS{ID: distro.id, VersionID: distro.idVersion}
 		c.Logf("checking distribution %#v", rel)
-		release.MockReleaseInfo(rel)
-		c.Assert(release.ReleaseInfo.ForceDevMode(), Equals, distro.devmode)
+		osutil.MockReleaseInfo(rel)
+		c.Assert(osutil.ReleaseInfo.ForceDevMode(), Equals, distro.devmode)
 	}
 }

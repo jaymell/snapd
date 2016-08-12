@@ -29,8 +29,8 @@ import (
 
 	"github.com/snapcore/snapd/arch"
 	"github.com/snapcore/snapd/dirs"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/overlord/state"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/snap/snaptest"
 
@@ -110,7 +110,7 @@ assumes: [common-data-dir]`
 }
 
 func (s *checkSnapSuite) TestCheckSnapGadgetUpdate(c *C) {
-	reset := release.MockOnClassic(false)
+	reset := osutil.MockOnClassic(false)
 	defer reset()
 
 	st := state.New(nil)
@@ -151,7 +151,7 @@ version: 2
 }
 
 func (s *checkSnapSuite) TestCheckSnapGadgetAdditionProhibited(c *C) {
-	reset := release.MockOnClassic(false)
+	reset := osutil.MockOnClassic(false)
 	defer reset()
 
 	st := state.New(nil)
@@ -197,7 +197,7 @@ func (s *checkSnapSuite) TestCheckSnapGadgetMissingPrior(c *C) {
 	err = ioutil.WriteFile(dirs.SnapFirstBootStamp, nil, 0644)
 	c.Assert(err, IsNil)
 
-	reset := release.MockOnClassic(false)
+	reset := osutil.MockOnClassic(false)
 	defer reset()
 
 	st := state.New(nil)
@@ -225,7 +225,7 @@ version: 1
 }
 
 func (s *checkSnapSuite) TestCheckSnapGadgetCannotBeInstalledOnClassic(c *C) {
-	reset := release.MockOnClassic(true)
+	reset := osutil.MockOnClassic(true)
 	defer reset()
 
 	st := state.New(nil)

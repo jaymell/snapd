@@ -27,7 +27,6 @@ import (
 
 	"github.com/snapcore/snapd/logger"
 	"github.com/snapcore/snapd/osutil"
-	"github.com/snapcore/snapd/release"
 )
 
 // The SNAP_REEXEC environment variable controls whether the command
@@ -50,7 +49,7 @@ const minOldRevno = 126
 // ExecInCoreSnap makes sure you're executing the binary that ships in
 // the core snap.
 func ExecInCoreSnap() {
-	if !release.OnClassic {
+	if !osutil.OnClassic {
 		// you're already the real deal, natch
 		return
 	}

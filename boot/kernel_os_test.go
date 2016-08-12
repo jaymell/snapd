@@ -31,7 +31,6 @@ import (
 	"github.com/snapcore/snapd/dirs"
 	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/partition"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 	"github.com/snapcore/snapd/snap/snaptest"
 )
@@ -148,7 +147,7 @@ func (s *kernelOSSuite) TestExtractKernelAssetsError(c *C) {
 
 // SetNextBoot should do nothing on classic LP: #1580403
 func (s *kernelOSSuite) TestSetNextBootOnClassic(c *C) {
-	restore := release.MockOnClassic(true)
+	restore := osutil.MockOnClassic(true)
 	defer restore()
 
 	// Create a fake OS snap that we try to update
@@ -160,7 +159,7 @@ func (s *kernelOSSuite) TestSetNextBootOnClassic(c *C) {
 }
 
 func (s *kernelOSSuite) TestSetNextBootForCore(c *C) {
-	restore := release.MockOnClassic(false)
+	restore := osutil.MockOnClassic(false)
 	defer restore()
 
 	info := &snap.Info{}
@@ -180,7 +179,7 @@ func (s *kernelOSSuite) TestSetNextBootForCore(c *C) {
 }
 
 func (s *kernelOSSuite) TestSetNextBootForKernel(c *C) {
-	restore := release.MockOnClassic(false)
+	restore := osutil.MockOnClassic(false)
 	defer restore()
 
 	info := &snap.Info{}

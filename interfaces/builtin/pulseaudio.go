@@ -23,7 +23,7 @@ import (
 	"bytes"
 
 	"github.com/snapcore/snapd/interfaces"
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 )
 
 const pulseaudioConnectedPlugAppArmor = `
@@ -130,7 +130,7 @@ func (iface *PulseAudioInterface) PermanentPlugSnippet(plug *interfaces.Plug, se
 func (iface *PulseAudioInterface) ConnectedPlugSnippet(plug *interfaces.Plug, slot *interfaces.Slot, securitySystem interfaces.SecuritySystem) ([]byte, error) {
 	switch securitySystem {
 	case interfaces.SecurityAppArmor:
-		if release.OnClassic {
+		if osutil.OnClassic {
 			b := bytes.NewBuffer([]byte(pulseaudioConnectedPlugAppArmor))
 			b.Write([]byte(pulseaudioConnectedPlugAppArmorDesktop))
 			return b.Bytes(), nil

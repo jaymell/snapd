@@ -36,3 +36,16 @@ func MockSudoersDotD(mockDir string) func() {
 
 	return func() { sudoersDotD = realSudoersD }
 }
+
+var ReadOSRelease = readOSRelease
+
+func MockOSReleasePath(filename string) (restore func()) {
+	old := osReleasePath
+	oldFallback := fallbackOsReleasePath
+	osReleasePath = filename
+	fallbackOsReleasePath = filename
+	return func() {
+		osReleasePath = old
+		fallbackOsReleasePath = oldFallback
+	}
+}

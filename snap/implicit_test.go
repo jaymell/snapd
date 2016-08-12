@@ -21,7 +21,7 @@ package snap_test
 
 import (
 	"github.com/snapcore/snapd/interfaces/builtin"
-	"github.com/snapcore/snapd/release"
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/snap"
 
 	. "gopkg.in/check.v1"
@@ -32,7 +32,7 @@ type SpecialSuite struct{}
 var _ = Suite(&SpecialSuite{})
 
 func (s *InfoSnapYamlTestSuite) TestAddImplicitSlotsOutsideClassic(c *C) {
-	restore := release.MockOnClassic(false)
+	restore := osutil.MockOnClassic(false)
 	defer restore()
 
 	osYaml := []byte("name: ubuntu-core\ntype: os\n")
@@ -46,7 +46,7 @@ func (s *InfoSnapYamlTestSuite) TestAddImplicitSlotsOutsideClassic(c *C) {
 }
 
 func (s *InfoSnapYamlTestSuite) TestAddImplicitSlotsOnClassic(c *C) {
-	restore := release.MockOnClassic(true)
+	restore := osutil.MockOnClassic(true)
 	defer restore()
 
 	osYaml := []byte("name: ubuntu-core\ntype: os\n")

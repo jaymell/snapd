@@ -24,9 +24,9 @@ import (
 
 	. "gopkg.in/check.v1"
 
+	"github.com/snapcore/snapd/osutil"
 	"github.com/snapcore/snapd/overlord/snapstate"
 	"github.com/snapcore/snapd/overlord/state"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/snap"
 )
 
@@ -189,7 +189,7 @@ func (s *linkSnapSuite) TestDoLinkSnapTryToCleanupOnError(c *C) {
 }
 
 func (s *linkSnapSuite) TestDoLinkSnapSuccessCoreRestarts(c *C) {
-	restore := release.MockOnClassic(true)
+	restore := osutil.MockOnClassic(true)
 	defer restore()
 
 	s.state.Lock()
