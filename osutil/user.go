@@ -28,6 +28,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+    "github.com/snapcore/snapd/release"
+
 )
 
 var userLookup = user.Lookup
@@ -50,12 +53,20 @@ func AddExtraSudoUser(name string, sshKeys []string, gecos string) error {
 		return fmt.Errorf("cannot add user %q: name contains invalid characters", name)
 	}
 
-	cmd := exec.Command("adduser",
-		"--force-badname",
-		"--gecos", gecos,
-		"--extrausers",
-		"--disabled-password",
-		name)
+    if release.OnClassic {
+		cmd := exec.Command("adduser",
+			"--force-badname",
+			"--gecos", gecos,
+			"--disabled-password",
+			name)
+    } else {
+        cmd := exec.Command("adduser",
+            "--force-badname",
+            "--gecos", gecos,
+            "--extrausers",
+            "--disabled-password",
+            name)
+    }
 	if output, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("adduser failed with %s: %s", err, output)
 	}
