@@ -27,6 +27,7 @@ import (
 	"gopkg.in/check.v1"
 
 	"github.com/snapcore/snapd/osutil"
+	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/testutil"
 )
 
@@ -56,12 +57,23 @@ func (s *createUserSuite) TestAddExtraSudoUser(c *check.C) {
 
 	mockAddUser := testutil.MockCommand(c, "adduser", "true")
 	defer mockAddUser.Restore()
-
+	// command output will vary based on release
+	restore := release.MockOnClassic(false)
+	defer restore()
 	err := osutil.AddExtraSudoUser("karl.sagan", []string{"ssh-key1", "ssh-key2"}, "my gecos")
 	c.Assert(err, check.IsNil)
-
 	c.Check(mockAddUser.Calls(), check.DeepEquals, [][]string{
 		{"adduser", "--force-badname", "--gecos", "my gecos", "--extrausers", "--disabled-password", "karl.sagan"},
+	})
+
+	mockAddUser = testutil.MockCommand(c, "adduser", "true")
+	defer mockAddUser.Restore()
+	restore = release.MockOnClassic(true)
+	defer restore()
+	err = osutil.AddExtraSudoUser("karl.sagan", []string{"ssh-key1", "ssh-key2"}, "my gecos")
+	c.Assert(err, check.IsNil)
+	c.Check(mockAddUser.Calls(), check.DeepEquals, [][]string{
+		{"adduser", "--force-badname", "--gecos", "my gecos", "--disabled-password", "karl.sagan"},
 	})
 
 	sshKeys, err := ioutil.ReadFile(filepath.Join(mockHome, ".ssh", "authorized_keys"))
