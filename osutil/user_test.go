@@ -57,7 +57,6 @@ func (s *createUserSuite) TestAddExtraSudoUser(c *check.C) {
 
 	mockAddUser := testutil.MockCommand(c, "adduser", "true")
 	defer mockAddUser.Restore()
-	// command output will vary based on release
 	restore := release.MockOnClassic(false)
 	defer restore()
 	err := osutil.AddExtraSudoUser("karl.sagan", []string{"ssh-key1", "ssh-key2"}, "my gecos")
@@ -66,8 +65,7 @@ func (s *createUserSuite) TestAddExtraSudoUser(c *check.C) {
 		{"adduser", "--force-badname", "--gecos", "my gecos", "--extrausers", "--disabled-password", "karl.sagan"},
 	})
 
-	mockAddUser = testutil.MockCommand(c, "adduser", "true")
-	defer mockAddUser.Restore()
+	mockAddUser.ForgetCalls()
 	restore = release.MockOnClassic(true)
 	defer restore()
 	err = osutil.AddExtraSudoUser("karl.sagan", []string{"ssh-key1", "ssh-key2"}, "my gecos")
