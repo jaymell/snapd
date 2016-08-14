@@ -27,7 +27,6 @@ import (
 	"gopkg.in/check.v1"
 
 	"github.com/snapcore/snapd/osutil"
-	"github.com/snapcore/snapd/release"
 	"github.com/snapcore/snapd/testutil"
 )
 
@@ -57,7 +56,7 @@ func (s *createUserSuite) TestAddExtraSudoUser(c *check.C) {
 
 	mockAddUser := testutil.MockCommand(c, "adduser", "true")
 	defer mockAddUser.Restore()
-	restore := release.MockOnClassic(false)
+	restore := osutil.MockOnClassic(false)
 	defer restore()
 	err := osutil.AddExtraSudoUser("karl.sagan", []string{"ssh-key1", "ssh-key2"}, "my gecos")
 	c.Assert(err, check.IsNil)
@@ -66,7 +65,7 @@ func (s *createUserSuite) TestAddExtraSudoUser(c *check.C) {
 	})
 
 	mockAddUser.ForgetCalls()
-	restore = release.MockOnClassic(true)
+	restore = osutil.MockOnClassic(true)
 	defer restore()
 	err = osutil.AddExtraSudoUser("karl.sagan", []string{"ssh-key1", "ssh-key2"}, "my gecos")
 	c.Assert(err, check.IsNil)

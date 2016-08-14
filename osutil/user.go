@@ -28,8 +28,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/snapcore/snapd/release"
 )
 
 var userLookup = user.Lookup
@@ -53,7 +51,7 @@ func AddExtraSudoUser(name string, sshKeys []string, gecos string) error {
 	}
 
 	var cmd *exec.Cmd
-	if release.OnClassic {
+	if OnClassic {
 		cmd = exec.Command("adduser",
 			"--force-badname",
 			"--gecos", gecos,
