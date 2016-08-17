@@ -17,6 +17,8 @@ restore: |
 execute: |
     echo "create-user without sudo should fail"
     expected='error: bad user result: access denied'
-    snap create-user nobody 2>&1 | grep -Pq "$expected"
+    snap create-user jamesmlucas@gmail.com 2>&1 | grep -Pq "$expected"
     echo "========================================="
+
+	echo "create-user should create a user with sudo and an extent user email addy"
 
