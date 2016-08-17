@@ -1,0 +1,22 @@
+summary: Ensures that create-user functionality behaves as expected
+
+details: |
+    A snap declaring the mount-observe plug is defined, its command
+    just read the /proc/<pid>/mounts file.
+
+    The test itself checks for the lack of autoconnect and then tries
+    to execute the snap command with the plug connected (it must succeed)
+    and disconnected (it must fail).
+
+    The test also checks that a new mount created after the snap is installed
+    is also shown when the plug is connected.
+
+restore: |
+    userdel -r lakatos || true
+
+execute: |
+    echo "create-user without sudo should fail"
+    expected='error: bad user result: access denied'
+    snap create-user nobody 2>&1 | grep -Pq "$expected"
+    echo "========================================="
+
