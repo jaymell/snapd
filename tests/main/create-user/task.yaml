@@ -1,5 +1,8 @@
 summary: Ensures that create-user functionality behaves as expected
 
+environment:
+    USER_EMAIL: mvo@ubuntu.com
+    USER_NAME: mvo
 details: |
     A snap declaring the mount-observe plug is defined, its command
     just read the /proc/<pid>/mounts file.
@@ -11,14 +14,16 @@ details: |
     The test also checks that a new mount created after the snap is installed
     is also shown when the plug is connected.
 
-restore: |
-    userdel -r lakatos || true
-
 execute: |
-    echo "create-user without sudo should fail"
-    expected='error: bad user result: access denied'
-    snap create-user jamesmlucas@gmail.com 2>&1 | grep -Pq "$expected"
-    echo "========================================="
+    echo "snap create-user without sudo"
+    expected="error: bad user result: access denied"
+    snap create-user $USER_EMAIL 2>&1 | grep -Pq "$expected"
+    echo "sudo snap create-user -- no email address"
+    expected="error: bad user result: cannot create user: 'email' field is empty"
+    sudo snap create-user 2>&1 | grep -Pq "$expected"
 
-	echo "create-user should create a user with sudo and an extent user email addy"
+    echo "sudo snap create-user -- valid email address" 
+    expected="Created user "\"$USER_NAME\"
+    sudo snap create-user $USER_EMAIL 2>&1 | grep -Pq "$expected"
 
+    ### test without extrausers
