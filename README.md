@@ -119,7 +119,7 @@ There is more to read about the testing framework on the [website](https://labix
 To run the spread tests locally you need the latest version of spread
 from https://github.com/snapcore/spread. It can be installed via:
 
-    $ sudo apt install qemu-kvm autopkgtest
+    $ sudo apt install qemu-kvm autopkgtest genisoimage
     $ sudo snap install spread
 
 Then setup the environment via:
